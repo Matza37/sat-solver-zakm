@@ -1,7 +1,10 @@
-Přidat do projektu
+Přidat do projektu:
 git add .
 git commit -m "note"
 git push
 
-Stáhnout projekt (vždy na začátku práce!)
+Stáhnout projekt (vždy na začátku práce!):
 git pull v source control
+
+For testing:
+npm run dev

@@ -5,9 +5,117 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>SAT solver zakm</title>
-  </head>
+</head>
   <body>
-    <div id="app"></div>
+    <div class="container">
+      <h1>DPLL SAT Solver</h1>
+      <p>Vložte formuli ve formátu DIMACS CNF:</p>
+      
+      <!-- Výchozí text je jednoduchá splnitelná formule -->
+      <textarea id="dimacs-input" rows="10">p cnf 3 3
+1 -2 0
+-1 2 -3 0
+-2 3 0</textarea>
+
+      <div class="controls">
+        <label for="heuristic-select">Heuristika:</label>
+        <select id="heuristic-select">
+          <option value="random">Náhodný výběr</option>
+          <option value="dlis">DLIS (Četnost výskytu)</option>
+          <option value="jw">Jeroslow-Wang (Délka klauzulí)</option>
+        </select>
+        
+        <button id="solve-btn">Vyřešit formuli</button>
+      </div>
+
+      <div id="output-section" class="hidden">
+        <h2>Výsledek: <span id="status"></span></h2>
+        
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <span>Čas:</span>
+            <strong id="metric-time">-</strong>
+          </div>
+          <div class="metric-card">
+            <span>Rozhodnutí:</span>
+            <strong id="metric-decisions">-</strong>
+          </div>
+          <div class="metric-card">
+            <span>Propagace:</span>
+            <strong id="metric-propagations">-</strong>
+          </div>
+          <div class="metric-card">
+            <span>Návraty (Backtracks):</span>
+            <strong id="metric-backtracks">-</strong>
+          </div>
+        </div>
+
+        <h3>Přiřazení proměnných:</h3>
+        <div id="assignment-output"></div>
+      </div>
+    </div>
+
+    <!--GRAFY-->
+    <div class="container" style="margin-top: 20px; margin-bottom: 50px;">
+      <h2>Analýza benchmarků (Fázový přechod)</h2>
+
+      <!-- NOVÁ SEKCE: Generátor -->
+      <div style="background: #f8f9fa; padding: 15px; border-radius: 6px; margin-bottom: 20px; border: 1px solid #e9ecef;">
+        <h3>1. Vygenerovat nová data v prohlížeči</h3>
+        <div class="controls" style="flex-wrap: wrap;">
+          <label for="bench-vars">Počet proměnných (V):</label>
+          <input type="number" id="bench-vars" value="20" min="5" max="100" style="width: 80px; padding: 8px;">
+          
+          <label for="bench-samples">Vzorků na poměr:</label>
+          <input type="number" id="bench-samples" value="5" min="1" max="100" style="width: 80px; padding: 8px;">
+          
+          <button id="run-bench-btn" style="background-color: #28a745;">Spustit benchmark</button>
+        </div>
+        <p id="bench-status" class="hidden" style="color: #0066cc; font-weight: bold; margin-top: 10px;">Generuji a počítám, čekejte prosím... (může to zamrznout prohlížeč na pár vteřin)</p>
+        <a id="download-csv" class="hidden" href="#" download="results.csv" style="margin-top: 10px; color: #28a745; font-weight: bold;">Stáhnout vygenerovaný results.csv</a>
+      </div>
+
+      <!-- PŮVODNÍ SEKCE: Nahrání souboru -->
+      <div style="margin-bottom: 30px;">
+        <h3>2. Nebo nahrát existující results.csv</h3>
+        <input type="file" id="csv-upload" accept=".csv" />
+      </div>
+      
+      <!-- ZDE SE VYKRESLÍ GRAFY -->
+      <div id="charts-section" class="hidden">
+        <hr style="border: 1px solid #eee; margin: 30px 0;">
+        
+        <div class="charts-grid">
+          <div class="chart-card">
+            <h3>Průměrný čas řešení (ms)</h3>
+            <div class="canvas-wrapper">
+              <canvas id="timeChart"></canvas>
+            </div>
+          </div>
+          
+          <div class="chart-card">
+            <h3>Průměrný počet rozhodnutí</h3>
+            <div class="canvas-wrapper">
+              <canvas id="decisionChart"></canvas>
+            </div>
+          </div>
+          
+          <div class="chart-card">
+            <h3>Průměrný počet propagací</h3>
+            <div class="canvas-wrapper">
+              <canvas id="propagationChart"></canvas>
+            </div>
+          </div>
+          
+          <div class="chart-card">
+            <h3>Průměrný počet návratů (Backtracks)</h3>
+            <div class="canvas-wrapper">
+              <canvas id="backtrackChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    <!-- Propojení s naším hlavním TypeScript souborem -->
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>
